@@ -1,5 +1,6 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
+const session = require('express-session')
 const methodOverride = require('method-override') // function for ?_method=PUT and ?_method=DELETE
 
 const app = express()
@@ -18,6 +19,14 @@ app.engine(
 )
 app.set('view engine', 'hbs')
 
+// session
+app.use(
+  session({
+    secret: 'ThisIsMySecret',
+    resave: false,
+    saveUninitialized: true,
+  })
+)
 // use css & js
 app.use(express.static('public'))
 app.use(methodOverride('_method'))
