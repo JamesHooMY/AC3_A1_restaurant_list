@@ -14,11 +14,13 @@ module.exports = app => {
         .then(user => {
           if (!user) {
             return done(null, false, {
+              type: 'warning_msg',
               message: 'That email is not registered!',
             })
           }
           if (user.password !== password) {
             return done(null, false, {
+              type: 'warning_msg',
               message: 'Email or Password incorrect.',
             })
           }

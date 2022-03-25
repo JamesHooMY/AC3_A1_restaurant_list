@@ -95,10 +95,12 @@
       </div>
     </div>
   </div>
-
-{{else}}
+    {{else}}
   {{! alert message }}
   <div class='alert alert-danger text-center m-5' role='alert'>
-    No restaurant had been found with your keyword: "{{keyword}}" !
+    No restaurant had been {{#if keyword}}found with your keyword: "{{keyword}}" !
+    {{else}}
+    created !
+    {{/if}}
   </div>
 {{/if}}

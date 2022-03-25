@@ -19,7 +19,8 @@ router.get('/search', (req, res) => {
   sortOpts.find(sort => sort.innerText === querySort).selected = 'selected'
   let sortOpt = sortOpts.find(sort => sort.innerText === querySort).sortOpt
   // console.log(sortOpts)
-  return Restaurant.find()
+  const userId = req.user._id
+  return Restaurant.find({ userId })
     .lean()
     .sort(sortOpt)
     .then(restaurants =>
@@ -49,7 +50,7 @@ router.post('/', (req, res) => {
   const userId = req.user._id
   const restaurant = req.body
   restaurant.userId = userId // restaurant['userId'] = userId
-  console.log(restaurant)
+  // console.log(restaurant)
   return Restaurant.create(restaurant)
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
