@@ -19,24 +19,24 @@ router.get('/search', (req, res) => {
   sortOpts.find(sort => sort.innerText === querySort).selected = 'selected'
   let sortOpt = sortOpts.find(sort => sort.innerText === querySort).sortOpt
   // console.log(sortOpts)
-  Restaurant.find()
+  return Restaurant.find()
     .lean()
     .sort(sortOpt)
-    .then(restaurants => {
-      let searchRestaurants = restaurants.filter(restaurant => {
-        return (
+    .then(restaurants =>
+      restaurants.filter(
+        restaurant =>
           // includes(null) 會回傳整個 array
           restaurant.name.trim().toLowerCase().includes(keyword) ||
           restaurant.name_en.trim().toLowerCase().includes(keyword)
-        )
-      })
-
+      )
+    )
+    .then(searchRestaurants =>
       res.render('index', {
         restaurants: searchRestaurants,
         keyword,
         sortOpts,
       })
-    })
+    )
 })
 
 // render new page for adding restaurant
@@ -46,15 +46,20 @@ router.get('/new', (req, res) => {
 
 // add new restaurant
 router.post('/', (req, res) => {
-  Restaurant.create(req.body)
+  const userId = req.user._id
+  const restaurant = req.body
+  restaurant.userId = userId // restaurant['userId'] = userId
+  console.log(restaurant)
+  return Restaurant.create(restaurant)
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
 
 // render detail page of restaurant
 router.get('/:restaurant_id', (req, res) => {
+  const userId = req.user._id
   const restaurantId = req.params.restaurant_id
-  Restaurant.findById(restaurantId)
+  return Restaurant.findOne({ restaurantId, userId })
     .lean()
     .then(restaurant => res.render('show', { restaurant }))
     .catch(error => console.log(error))
@@ -62,8 +67,9 @@ router.get('/:restaurant_id', (req, res) => {
 
 // render edit page of restaurant
 router.get('/:restaurant_id/edit', (req, res) => {
+  const userId = req.user._id
   const restaurantId = req.params.restaurant_id
-  Restaurant.findById(restaurantId)
+  return Restaurant.findOne({ restaurantId, userId })
     .lean()
     .then(restaurant => res.render('edit', { restaurant }))
     .catch(error => console.log(error))
@@ -72,7 +78,10 @@ router.get('/:restaurant_id/edit', (req, res) => {
 // update restaurant information
 router.put('/:restaurant_id', (req, res) => {
   const restaurantId = req.params.restaurant_id
-  Restaurant.findByIdAndUpdate(restaurantId, req.body)
+  const userId = req.user._id
+  const restaurant = req.body
+  // Restaurant.findByIdAndUpdate(restaurantId, restaurant)
+  return Restaurant.findOneAndUpdate({ restaurantId, userId }, restaurant)
     .then(() => res.redirect(`/restaurants/${restaurantId}`))
     .catch(error => console.log(error))
 })
@@ -80,7 +89,7 @@ router.put('/:restaurant_id', (req, res) => {
 // delete restaurant
 router.delete('/:restaurant_id', (req, res) => {
   const restaurantId = req.params.restaurant_id
-  Restaurant.findByIdAndDelete(restaurantId)
+  return Restaurant.findByIdAndDelete(restaurantId)
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })
