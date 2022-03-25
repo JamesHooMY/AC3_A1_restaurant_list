@@ -4,8 +4,12 @@ const session = require('express-session')
 const methodOverride = require('method-override') // function for ?_method=PUT and ?_method=DELETE
 const flash = require('connect-flash')
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 const routes = require('./routes') // router
 require('./config/mongoose') // mongoose connection
@@ -24,7 +28,7 @@ app.set('view engine', 'hbs')
 // session
 app.use(
   session({
-    secret: 'ThisIsMySecret',
+    secret: process.env.SESSION_SECRECT,
     resave: false,
     saveUninitialized: true,
   })
