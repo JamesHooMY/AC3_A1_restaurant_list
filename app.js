@@ -32,7 +32,14 @@ app.use(
 app.use(express.static('public'))
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true })) // Express include the body-parser from version 4.16.0
-usePassport(app)
+usePassport(app) // passport verification
+// this part for getting the information of passport verification
+app.use((req, res, next) => {
+  // 你可以在這裡 console.log(req.user) 等資訊來觀察
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next() // this next() direct to continue process next middleware app.use(routes)
+})
 app.use(routes) // router connection
 
 // router listener

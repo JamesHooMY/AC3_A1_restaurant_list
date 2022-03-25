@@ -1,46 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Favourite Restaurants</title>
+  <head>
+    <meta charset='UTF-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <title>My Favourite Restaurants</title>
 
-  {{!-- css link --}}
-  <link rel="stylesheet" href="/stylesheets/bootstrap.css">
-  <link rel="stylesheet" href="/stylesheets/all.css">
-  <link rel="stylesheet" href="/stylesheets/restaurants.css">
-</head>
+    {{! css link }}
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <link rel='stylesheet' href='/stylesheets/all.css' />
+    <link rel='stylesheet' href='/stylesheets/restaurants.css' />
+  </head>
 
-<body>
-  {{!-- main html --}}
-  <header>
-    <!-- navigation -->
-    <nav class="navbar navbar-light bg-light">
-      <div class="container">
-        <a class="navbar-brand" href="/">
-          <img src="https://assets-lighthouse.s3.amazonaws.com/uploads/image/file/6227/restaurant-list-logo.png"
-            width="30" height="30" class="d-inline-block align-top" alt="我的餐廳清單">
-          我的餐廳清單
-        </a>
-        {{!-- router: /restaurants/new --}}
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <a href="/restaurants/new"><button class="btn btn-primary">新增餐廳</button></a>
+  <body>
+    {{! main html }}
+    <header>
+      <!-- navigation -->
+      <nav class='navbar navbar-light bg-light'>
+        <div class='container'>
+          <a class='navbar-brand' href='/'>
+            <img
+              src='https://assets-lighthouse.s3.amazonaws.com/uploads/image/file/6227/restaurant-list-logo.png'
+              width='30'
+              height='30'
+              class='d-inline-block align-top'
+              alt='我的餐廳清單'
+            />
+            {{#if user}}
+              {{user.name}}
+            {{else}}
+              我
+            {{/if}}
+            的餐廳清單
+          </a>
+
+          {{! router: /restaurants/new }}
+          <div class='d-grid gap-2 d-md-flex justify-content-md-end'>
+            {{#if isAuthenticated}}
+              <a href='/users/logout'><button
+                  class='btn btn-primary'
+                >Logout</button></a>
+            {{else}}
+              <a href='/users/login'><button
+                  class='btn btn-primary'
+                >Login</button></a>
+            {{/if}}
+          </div>
         </div>
-      </div>
-    </nav>
-    <div class="banner"></div>
-  </header>
+      </nav>
+      <div class='banner'></div>
+    </header>
 
-  {{!-- partial html --}}
-  {{{body}}}
+    {{! partial html }}
+    {{{body}}}
 
-  {{!-- include javascript files here --}}
-  <script src="/javascripts/popper.js"></script>
-  <script src="/javascripts/jquery-3.6.0.js"></script>
-  <script src="/javascripts/bootstrap.js"></script>
-  <script src="/javascripts/all.js"></script>
-</body>
+    {{! include javascript files here }}
+    <script src='/javascripts/popper.js'></script>
+    <script src='/javascripts/jquery-3.6.0.js'></script>
+    <script src='/javascripts/bootstrap.js'></script>
+    <script src='/javascripts/all.js'></script>
+  </body>
 
 </html>
