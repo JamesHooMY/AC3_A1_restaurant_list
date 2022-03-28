@@ -45,11 +45,9 @@
 {{#if restaurants}}
   <!-- restaurant list -->
   <div class='container mt-5'>
-
       <div class='col-md-10 col-12 mx-auto'>
         <div class='card-columns d-flex flex-wrap justify-content-center' >
           {{#each restaurants}}
-    
               <div class='card' style="width: 240px">
                 <a href='/restaurants/{{this._id}}' class='text-secondary'>
                 <img
@@ -64,7 +62,6 @@
                     <i class='fas fa-utensils pr-2'></i>
                     {{this.category}}
                   </div>
-
                   <span
                     class='badge badge-pill badge-danger font-weight-normal'
                   >
@@ -91,11 +88,9 @@
                   </form>
                 </div>
               </div>
-      
           {{/each}}
         </div>
       </div>
- 
   </div>
 
     {{else}}
