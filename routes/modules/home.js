@@ -11,15 +11,12 @@ router.get('/', (req, res) => {
     { innerText: '類別', sortOpt: { category: 1 } },
     { innerText: '地區', sortOpt: { location: 1 } },
   ]
-  // console.log(sortOpts[0].sortOpt)
 
   const userId = req.user._id
-  Restaurant.find({ userId }) // this is an array
+  Restaurant.find({ userId })
     .lean()
-    .sort(sortOpts[0].sortOpt) // sorting by name_en with ascending
-    .then(restaurants => {
-      res.render('index', { restaurants, sortOpts })
-    })
+    .sort(sortOpts[0].sortOpt)
+    .then(restaurants => res.render('index', { restaurants, sortOpts }))
     .catch(error => console.log(error))
 })
 

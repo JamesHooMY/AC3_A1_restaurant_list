@@ -7,47 +7,17 @@ const bcrypt = require('bcrypt')
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
+const db = require('../../config/mongoose')
 
-const db = require('../../config/mongoose') // !!! 這個一定要放在 require('dotenv') 之後 ！！！
-
-// const users = [
-//   {
-//     name: 'user1',
-//     email: 'user1@example.com',
-//     password: '12345678',
-//     restaurantId: [1, 2, 3],
-//   },
-//   {
-//     name: 'user2',
-//     email: 'user2@example.com',
-//     password: '12345678',
-//     restaurantId: [4, 5, 6],
-//   },
-// ]
-
-//------------------------------------------------------------- 先處理好資料
-// users.forEach(user => {
-//   const restaurants = []
-//   user.restaurantId.forEach(id => {
-//     const restaurant = restaurantList.find(restaurant => restaurant.id === id)
-//     restaurants.push(restaurant)
-//   })
-//   user.restaurants = restaurants
-// })
-// users.forEach(user => console.log(user.restaurants))
-//-------------------------------------------------------------
-
-// ------------------------------- Two Promise all method --------------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Two Promise all method with checking repeat user in User >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 // db.once('open', () => {
-//   // create the data of restaurants.json in mongoDB
 //   Promise.all(
-//     // promise 内一定要塞 array 所以直接用 map 回傳帶入
 //     users.map(user => {
 //       const { name, email, password, restaurantId } = user
-//       return User.findOne({ email }) // 這個 return 是提供給 map 的，只要 => 有接 {}, 就必須指定 return
+//       return User.findOne({ email })
 //         .then(user => {
 //           if (!user) {
-//             return bcrypt // 這個 return 是提供給這層的 then
+//             return bcrypt
 //               .genSalt(10)
 //               .then(salt => bcrypt.hash(password, salt))
 //               .then(hash =>
@@ -62,18 +32,16 @@ const db = require('../../config/mongoose') // !!! 這個一定要放在 require
 //                 const restaurants = []
 //                 return (
 //                   Promise.all(
-//                     // 這個 return 是提供給這層的 then
 //                     restaurantId.map(id => {
 //                       const restaurant = restaurantList.find(
 //                         restaurant => restaurant.id === id
 //                       )
 //                       restaurant.userId = userId
-//                       return restaurants.push(restaurant) // 這個 return 是提供給 map 的
+//                       return restaurants.push(restaurant)
 //                     })
 //                   )
 //                     .then(() => console.log(restaurants))
-//                     // .then(() => Restaurant.create(restaurants))
-//                     .then(() => Restaurant.insertMany(restaurants))
+//                     .then(() => Restaurant.insertMany(restaurants))  // .then(() => Restaurant.create(restaurants))
 //                     .catch(err => console.log(err))
 //                 )
 //               })
@@ -94,23 +62,16 @@ const db = require('../../config/mongoose') // !!! 這個一定要放在 require
 //     })
 //     .catch(err => console.log(err))
 // })
-// ----------------------------------------------------------------------------------------------
 
-// 考慮到 server 通常都會直接找 database 要一次資料後直接在 server 上做處理后 render，避免一直訪問 DB 浪費時間
-// 直接透過演算法來處理 restaurant 的資料
-// Promise.all.then()-------------------------------------------------------------------------------
+// <<<<<<<<<<<<<<<<<<<<<<<< One Promise.all with checking repeat user in User >>>>>>>>>>>>>>>>>>>>>>>>
 // db.once('open', () => {
-//   // 這裏設計以 create User 資料的同時接著 create 餐廳資料，2 輪回以 User.map 來做
 //   Promise.all(
-//     // promise 内一定要塞 array 所以直接用 map 回傳帶入
 //     users.map((user, userIndex) => {
-//       // const { name, email, password, restaurantId } = user
 //       const { name, email, password } = user
-//       // 這裏要確認 user 沒有在 DB 内重複 ！！！
-//       return User.findOne({ email }) // 這個 return 是提供給 map 的，只要 => 有接 {}, 就必須指定 return
+//       return User.findOne({ email })
 //         .then(user => {
 //           if (!user) {
-//             return bcrypt // 這個 return 是提供給這層的 then
+//             return bcrypt
 //               .genSalt(10)
 //               .then(salt => bcrypt.hash(password, salt))
 //               .then(hash =>
@@ -121,7 +82,6 @@ const db = require('../../config/mongoose') // !!! 這個一定要放在 require
 //                 })
 //               )
 //               .then(user => {
-//                 // 在此拿到 user._id !!! 開始可以接續做 Restaurant.create() 或 Restaurant.insertMany()
 //                 const userId = user._id
 //                 const userRestaurants = []
 //                 restaurantList.forEach((restaurant, restaurantIndex) => {
@@ -154,19 +114,14 @@ const db = require('../../config/mongoose') // !!! 這個一定要放在 require
 //     })
 //     .catch(err => console.log(err))
 // })
-// ---------------------------------------------------------------------------------------------------------
 
-// async/await
+// <<<< Two Promise.all with async/await for checking repeat user and user specific restaurant in User and Restaurant >>>>
 db.once('open', async () => {
-  // 這裏設計以 create User 資料的同時接著 create 餐廳資料，2 輪回以 User.map 來做
   await Promise.all(
-    // promise 内一定要塞 array 所以直接用 map 回傳帶入
     users.map(async (user, userIndex) => {
-      // const { name, email, password, restaurantId } = user
       const { name, email, password } = user
-      // 這裏要確認 user 沒有在 DB 内重複 ！！！
-      const findUser = await User.findOne({ email }) // 這個 return 是提供給 map 的，只要 => 有接 {}, 就必須指定 return
-
+      const findUser = await User.findOne({ email })
+      // <<<<<<<<< if user not exist in User >>>>>>>>>
       if (!findUser) {
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(password, salt)
@@ -195,12 +150,12 @@ db.once('open', async () => {
           `${name} ${email} database and who's related restaurants were separately created in User and Restaurant database`
         )
       } else {
+        // <<<<<<<<< if user exist in User, check restaurant in Restaurant >>>>>>>>>
         console.log(`${name} ${email} is already in database !`)
 
         const userId = findUser._id
         const userRestaurants = []
         const userRestaurantsNew = []
-
         restaurantList.forEach((restaurant, restaurantIndex) => {
           if (
             restaurantIndex >= 4 * userIndex &&
@@ -211,27 +166,20 @@ db.once('open', async () => {
           }
         })
 
-        // console.log(userId)
-        // 這部分用來確認已有的 user，並確認需要新增的 restaurant 是否有重複
         await Promise.all(
-          // 因爲這裏有 multiple promise 所以一定要用到 promise.all 不能只靠 async await 來單獨處理 ！！！！！！！
-          userRestaurants.map(async (restaurant, restaurantIndex) => {
-            console.log(restaurantIndex + ' ' + restaurant.name)
+          userRestaurants.map(async restaurant => {
             const findRestaurant = await Restaurant.findOne({
               userId,
               name: restaurant.name,
             })
 
             if (!findRestaurant) {
-              console.log(restaurantIndex)
               userRestaurantsNew.push(restaurant)
             }
           })
         )
-        console.log(userId + ' ' + userRestaurantsNew)
         await Restaurant.insertMany(userRestaurantsNew)
       }
-      console.log('next')
     })
   )
   console.log('User and Restaurant create done !')
