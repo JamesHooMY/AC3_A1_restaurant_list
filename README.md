@@ -9,13 +9,13 @@ A web application for creating your favourite restaurants. You can easily search
 ![login](https://user-images.githubusercontent.com/87403901/160320670-42dd96ca-afbb-41e8-9a69-73cbd896cece.png)
 
 ## Main page
-![image](https://user-images.githubusercontent.com/87403901/160321073-ae631076-3adc-4bf0-9620-e9f5a4490fa9.png)
+![image](https://user-images.githubusercontent.com/87403901/160328651-22355cc9-30ba-4bbd-8013-9b7caca8e6f6.png)
 
 ## Detail of restaurant
 ![image](https://user-images.githubusercontent.com/87403901/160321117-cd87b101-3230-44e9-8638-e22c2ac95242.png)
 
 ## Search restaurant
-![image](https://user-images.githubusercontent.com/87403901/160321168-f1b83603-d288-4f93-9808-10c8c461bfb3.png)
+![image](https://user-images.githubusercontent.com/87403901/160328799-b260bda9-ea12-48e6-9928-e7327c423fec.png)
 
 ## Add restaurant
 ![image](https://user-images.githubusercontent.com/87403901/160321201-b5ce44a6-c442-41dd-a37d-2ec9862b4a56.png)
