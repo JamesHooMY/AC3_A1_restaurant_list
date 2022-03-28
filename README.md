@@ -24,7 +24,7 @@ A web application for creating your favourite restaurants. You can easily search
 ![image](https://user-images.githubusercontent.com/87403901/160321235-8e175411-838a-4d8b-96a6-58aa0df3dbf1.png)
 
 # Features
-1. Register your own account and start create your restaurant list
+1. Register your own account or using your facebook/google account directly to start create your restaurant list
 2. All favourite restaurants were shown on main page (include name, type of food, and promoted star of restaurants were displayed)
 3. Click the restaurant that you are interested, the detail informations of it will be shown.
 4. Search the restaurants that you are interested by typing the name or type of food of restaurants.
